@@ -19,14 +19,6 @@ class BotInfo(BaseModel):
     supports_inline_queries: bool | None = None
 
 
-class SetMeResult(BaseModel):
-    """Result returned after changing the runtime Telegram bot token."""
-
-    status: str
-    message: str
-    bot: BotInfo
-
-
 class ChatInfo(BaseModel):
     """Basic Telegram chat information."""
 

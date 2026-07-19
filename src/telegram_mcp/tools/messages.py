@@ -4,9 +4,8 @@ from __future__ import annotations
 
 from fastmcp import FastMCP
 
-from telegram_mcp.config import Settings
 from telegram_mcp.telegram.client import TelegramClient
-from telegram_mcp.telegram.models import DeleteMessagesResult, MessageHistoryResult
+from telegram_mcp.telegram.models import DeleteMessagesResult
 
 MAX_DELETE_MESSAGES = 100
 
@@ -22,19 +21,36 @@ def register_message_tools(mcp: FastMCP, client: TelegramClient) -> None:
     """Register Telegram message tools."""
 
     @mcp.tool()
-    async def delete_message(chat_id: int | str, message_id: int) -> DeleteMessagesResult:
+    async def delete_message(
+        telegram_bot_token: str,
+        chat_id: int | str,
+        message_id: int,
+    ) -> DeleteMessagesResult:
         """Delete one Telegram message from a conversation."""
         _validate_delete_limit(1)
-        return await client.delete_messages(chat_id=chat_id, message_ids=[message_id])
+        return await client.delete_messages(
+            telegram_bot_token=telegram_bot_token,
+            chat_id=chat_id,
+            message_ids=[message_id],
+        )
 
     @mcp.tool()
-    async def delete_messages(chat_id: int | str, message_ids: list[int]) -> DeleteMessagesResult:
+    async def delete_messages(
+        telegram_bot_token: str,
+        chat_id: int | str,
+        message_ids: list[int],
+    ) -> DeleteMessagesResult:
         """Delete multiple Telegram messages from a conversation by message IDs."""
         _validate_delete_limit(len(message_ids))
-        return await client.delete_messages(chat_id=chat_id, message_ids=message_ids)
+        return await client.delete_messages(
+            telegram_bot_token=telegram_bot_token,
+            chat_id=chat_id,
+            message_ids=message_ids,
+        )
 
     @mcp.tool()
     async def delete_message_history_range(
+        telegram_bot_token: str,
         chat_id: int | str,
         start_message_id: int,
         end_message_id: int,
@@ -53,4 +69,8 @@ def register_message_tools(mcp: FastMCP, client: TelegramClient) -> None:
 
         message_ids = list(range(start_message_id, end_message_id + 1))
         _validate_delete_limit(len(message_ids))
-        return await client.delete_messages(chat_id=chat_id, message_ids=message_ids)
+        return await client.delete_messages(
+            telegram_bot_token=telegram_bot_token,
+            chat_id=chat_id,
+            message_ids=message_ids,
+        )

@@ -31,11 +31,7 @@ A FastMCP server that exposes Telegram Bot API operations as Model Context Proto
    Copy-Item .env.example .env
    ```
 
-5. Edit `.env` and set at least your Telegram bot token. (or just leave your agent set by `set_me` tool from MCP)
-
-   ```env
-   TELEGRAM_BOT_TOKEN=123456789:your-real-bot-token
-   ```
+5. Edit `.env` as needed for server transport, logging, and safety limits. (logging and safety limits currently not working)
 
 ## Running the server
 
@@ -92,23 +88,22 @@ http://127.0.0.1:51000/mcp
 
 | Tool | Parameters | Description |
 | --- | --- | --- |
-| `get_me` | none | Returns sanitized identity information for the currently configured Telegram bot. |
-| `set_me` | `token: string` | Changes the active Telegram bot token for the current server process and returns the new bot identity. |
+| `get_me` | `telegram_bot_token: string` | Returns sanitized identity information for the supplied Telegram bot token. |
 
 ### Chat tools
 
 | Tool | Parameters | Description |
 | --- | --- | --- |
-| `get_chat_infomations` | `chat_id: int | string` | Returns sanitized Telegram chat information for a chat ID or username. Note: the tool name currently uses `infomations` as implemented in the project. |
-| `delete_forum_topic` | `chat_id: int | string`, `message_thread_id: int`, `confirm: boolean = false` | Deletes a forum topic from a Telegram forum supergroup. Requires `confirm=true`. |
+| `get_chat_infomations` | `telegram_bot_token: string`, `chat_id: int | string` | Returns sanitized Telegram chat information for a chat ID or username. Note: the tool name currently uses `infomations` as implemented in the project. |
+| `delete_forum_topic` | `telegram_bot_token: string`, `chat_id: int | string`, `message_thread_id: int`, `confirm: boolean = false` | Deletes a forum topic from a Telegram forum supergroup. Requires `confirm=true`. |
 
 ### Message tools
 
 | Tool | Parameters | Description |
 | --- | --- | --- |
-| `delete_message` | `chat_id: int | string`, `message_id: int` | Deletes one Telegram message from a conversation. |
-| `delete_messages` | `chat_id: int | string`, `message_ids: int[]` | Deletes multiple Telegram messages by explicit message IDs. Limited to 100 message IDs per call. |
-| `delete_message_history_range` | `chat_id: int | string`, `start_message_id: int`, `end_message_id: int`, `confirm: boolean = false` | Best-effort deletion of every message ID in an inclusive range. Requires `confirm=true` and is limited to 100 message IDs per call. |
+| `delete_message` | `telegram_bot_token: string`, `chat_id: int | string`, `message_id: int` | Deletes one Telegram message from a conversation. |
+| `delete_messages` | `telegram_bot_token: string`, `chat_id: int | string`, `message_ids: int[]` | Deletes multiple Telegram messages by explicit message IDs. Limited to 100 message IDs per call. |
+| `delete_message_history_range` | `telegram_bot_token: string`, `chat_id: int | string`, `start_message_id: int`, `end_message_id: int`, `confirm: boolean = false` | Best-effort deletion of every message ID in an inclusive range. Requires `confirm=true` and is limited to 100 message IDs per call. |
 
 ## Telegram Bot API limitations
 

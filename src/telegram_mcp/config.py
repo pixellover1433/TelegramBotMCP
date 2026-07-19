@@ -5,7 +5,7 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Annotated, Literal
 
-from pydantic import Field, SecretStr, field_validator
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 Transport = Literal["stdio", "sse", "streamable-http"]
@@ -32,11 +32,6 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    telegram_bot_token: SecretStr | None = Field(
-        default=None,
-        alias="TELEGRAM_BOT_TOKEN",
-        description="Telegram Bot API token issued by BotFather.",
-    )
     telegram_allowed_chat_ids: list[str] = Field(
         default_factory=list,
         alias="TELEGRAM_ALLOWED_CHAT_IDS",
@@ -137,13 +132,6 @@ class Settings(BaseSettings):
         if isinstance(value, list | tuple | set):
             return [str(item).strip() for item in value if str(item).strip()]
         return value
-
-    @property
-    def telegram_bot_token_value(self) -> str | None:
-        """Return the raw Telegram bot token for aiogram initialization."""
-        if self.telegram_bot_token is None:
-            return None
-        return self.telegram_bot_token.get_secret_value()
 
 
 @lru_cache(maxsize=1)

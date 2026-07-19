@@ -2,52 +2,25 @@
 
 from __future__ import annotations
 
-from aiogram import Bot
-
 from telegram_mcp.telegram.bot import create_bot_from_token
 from telegram_mcp.telegram.models import (
     BotInfo,
     ChatInfo,
     DeleteForumTopicResult,
     DeleteMessagesResult,
-    MessageHistoryResult,
 )
 
 
 class TelegramClient:
     """Small wrapper around aiogram's Bot API client."""
 
-    def __init__(self, bot: Bot | None = None) -> None:
-        self._bot = bot
-
-    def has_bot(self) -> bool:
-        """Return whether a Telegram bot is currently configured."""
-        return self._bot is not None
-
-    async def set_bot_token(self, token: str) -> BotInfo:
-        """Replace the active Telegram bot token at runtime and return bot identity."""
-        new_bot = create_bot_from_token(token)
-        old_bot = self._bot
-        self._bot = new_bot
-
-        try:
-            bot_info = await self.get_me()
-        except Exception:
-            self._bot = old_bot
-            await new_bot.session.close()
-            raise
-
-        if old_bot is not None:
-            await old_bot.session.close()
-
-        return bot_info
-
-    async def get_me(self) -> BotInfo:
+    async def get_me(self, telegram_bot_token: str) -> BotInfo:
         """Return sanitized Telegram bot identity information."""
-        if self._bot is None:
-            raise RuntimeError("Telegram bot token is not configured. Call set_me first.")
-
-        user = await self._bot.get_me()
+        bot = create_bot_from_token(telegram_bot_token)
+        try:
+            user = await bot.get_me()
+        finally:
+            await bot.session.close()
         return BotInfo(
             id=user.id,
             is_bot=user.is_bot,
@@ -62,27 +35,29 @@ class TelegramClient:
 
     async def delete_messages(
         self,
+        telegram_bot_token: str,
         chat_id: int | str,
         message_ids: list[int],
     ) -> DeleteMessagesResult:
         """Best-effort delete Telegram messages by explicit message IDs."""
-        if self._bot is None:
-            raise RuntimeError("Telegram bot token is not configured. Call set_me first.")
-
+        bot = create_bot_from_token(telegram_bot_token)
         deleted_message_ids: list[int] = []
         failed_message_ids: list[int] = []
 
-        for message_id in message_ids:
-            try:
-                deleted = await self._bot.delete_message(chat_id=chat_id, message_id=message_id)
-            except Exception:
-                failed_message_ids.append(message_id)
-                continue
+        try:
+            for message_id in message_ids:
+                try:
+                    deleted = await bot.delete_message(chat_id=chat_id, message_id=message_id)
+                except Exception:
+                    failed_message_ids.append(message_id)
+                    continue
 
-            if deleted:
-                deleted_message_ids.append(message_id)
-            else:
-                failed_message_ids.append(message_id)
+                if deleted:
+                    deleted_message_ids.append(message_id)
+                else:
+                    failed_message_ids.append(message_id)
+        finally:
+            await bot.session.close()
 
         return DeleteMessagesResult(
             chat_id=chat_id,
@@ -100,17 +75,19 @@ class TelegramClient:
 
     async def delete_forum_topic(
         self,
+        telegram_bot_token: str,
         chat_id: int | str,
         message_thread_id: int,
     ) -> DeleteForumTopicResult:
         """Delete a Telegram forum topic by message thread ID."""
-        if self._bot is None:
-            raise RuntimeError("Telegram bot token is not configured. Call set_me first.")
-
-        deleted = await self._bot.delete_forum_topic(
-            chat_id=chat_id,
-            message_thread_id=message_thread_id,
-        )
+        bot = create_bot_from_token(telegram_bot_token)
+        try:
+            deleted = await bot.delete_forum_topic(
+                chat_id=chat_id,
+                message_thread_id=message_thread_id,
+            )
+        finally:
+            await bot.session.close()
         return DeleteForumTopicResult(
             chat_id=chat_id,
             message_thread_id=message_thread_id,
@@ -121,12 +98,13 @@ class TelegramClient:
             ),
         )
 
-    async def get_chat_infomations(self, chat_id: int | str) -> ChatInfo:
+    async def get_chat_infomations(self, telegram_bot_token: str, chat_id: int | str) -> ChatInfo:
         """Return sanitized Telegram chat information."""
-        if self._bot is None:
-            raise RuntimeError("Telegram bot token is not configured. Call set_me first.")
-
-        chat = await self._bot.get_chat(chat_id=chat_id)
+        bot = create_bot_from_token(telegram_bot_token)
+        try:
+            chat = await bot.get_chat(chat_id=chat_id)
+        finally:
+            await bot.session.close()
         return ChatInfo(
             id=chat.id,
             type=chat.type,
