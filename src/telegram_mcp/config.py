@@ -9,6 +9,7 @@ from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 Transport = Literal["stdio", "sse", "streamable-http"]
+LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
 def _parse_array_values(value: str) -> list[str]:
@@ -70,6 +71,27 @@ class Settings(BaseSettings):
         default=30.0,
         alias="TELEGRAM_REQUEST_TIMEOUT_SECONDS",
         description="Timeout for Telegram Bot API requests in seconds.",
+    )
+
+    log_enabled: bool = Field(
+        default=True,
+        alias="LOG_ENABLED",
+        description="Whether application logging is enabled.",
+    )
+    log_level: LogLevel = Field(
+        default="INFO",
+        alias="LOG_LEVEL",
+        description="Application log level.",
+    )
+    log_aiogram_enabled: bool = Field(
+        default=False,
+        alias="LOG_AIOGRAM_ENABLED",
+        description="Whether verbose aiogram logging is enabled.",
+    )
+    log_fastmcp_enabled: bool = Field(
+        default=False,
+        alias="LOG_FASTMCP_ENABLED",
+        description="Whether verbose FastMCP logging is enabled.",
     )
 
     rate_limit_requests: Annotated[int, Field(ge=1)] = Field(
