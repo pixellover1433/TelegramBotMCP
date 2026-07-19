@@ -11,9 +11,14 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 Transport = Literal["stdio", "sse", "streamable-http"]
 
 
-def _parse_csv_values(value: str) -> list[str]:
-    """Parse a comma-separated environment value into a clean string list."""
-    return [item.strip() for item in value.split(",") if item.strip()]
+def _parse_array_values(value: str) -> list[str]:
+    """Parse a JSON-like array or comma-separated environment value into strings."""
+    stripped_value = value.strip()
+    if stripped_value in {"", "[]"}:
+        return []
+    if stripped_value.startswith("[") and stripped_value.endswith("]"):
+        stripped_value = stripped_value[1:-1]
+    return [item.strip().strip('"\'') for item in stripped_value.split(",") if item.strip()]
 
 
 class Settings(BaseSettings):
@@ -31,15 +36,15 @@ class Settings(BaseSettings):
         alias="TELEGRAM_BOT_TOKEN",
         description="Telegram Bot API token issued by BotFather.",
     )
-    telegram_allowed_chat_ids: set[str] = Field(
-        default_factory=set,
+    telegram_allowed_chat_ids: list[str] = Field(
+        default_factory=list,
         alias="TELEGRAM_ALLOWED_CHAT_IDS",
-        description="Comma-separated allowlist of Telegram chat IDs/usernames.",
+        description="JSON-like array allowlist of Telegram chat IDs/usernames.",
     )
-    telegram_blocked_chat_ids: set[str] = Field(
-        default_factory=set,
+    telegram_blocked_chat_ids: list[str] = Field(
+        default_factory=list,
         alias="TELEGRAM_BLOCKED_CHAT_IDS",
-        description="Comma-separated blocklist of Telegram chat IDs/usernames.",
+        description="JSON-like array blocklist of Telegram chat IDs/usernames.",
     )
     telegram_enable_send_messages: bool = Field(
         default=False,
@@ -102,13 +107,13 @@ class Settings(BaseSettings):
     @field_validator("telegram_allowed_chat_ids", "telegram_blocked_chat_ids", mode="before")
     @classmethod
     def parse_chat_ids(cls, value: object) -> object:
-        """Allow chat ID sets to be configured as comma-separated strings."""
+        """Allow chat IDs to be configured as arrays or comma-separated strings."""
         if value is None or value == "":
-            return set()
+            return []
         if isinstance(value, str):
-            return set(_parse_csv_values(value))
+            return _parse_array_values(value)
         if isinstance(value, list | tuple | set):
-            return {str(item).strip() for item in value if str(item).strip()}
+            return [str(item).strip() for item in value if str(item).strip()]
         return value
 
     @property
