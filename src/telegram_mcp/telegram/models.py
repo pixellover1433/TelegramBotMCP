@@ -38,3 +38,15 @@ class ChatInfo(BaseModel):
     last_name: str | None = None
     description: str | None = None
     invite_link: str | None = None
+
+
+class DeleteMessagesResult(BaseModel):
+    """Result returned after deleting Telegram messages."""
+
+    chat_id: int | str
+    requested_message_ids: list[int]
+    deleted_message_ids: list[int]
+    failed_message_ids: list[int]
+    deleted_count: int
+    failed_count: int
+    note: str
