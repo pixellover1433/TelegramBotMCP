@@ -94,16 +94,16 @@ http://127.0.0.1:51000/mcp
 
 | Tool | Parameters | Description |
 | --- | --- | --- |
-| `get_chat_infomations` | `telegram_bot_token: string`, `chat_id: int | string` | Returns sanitized Telegram chat information for a chat ID or username. Note: the tool name currently uses `infomations` as implemented in the project. |
-| `delete_forum_topic` | `telegram_bot_token: string`, `chat_id: int | string`, `message_thread_id: int`, `confirm: boolean = false` | Deletes a forum topic from a Telegram forum supergroup. Requires `confirm=true`. |
+| `get_chat_infomations` | `telegram_bot_token: string`, `chat_id: int \| string` | Returns sanitized Telegram chat information for a chat ID or username. Note: the tool name currently uses `infomations` as implemented in the project. |
+| `delete_forum_topic` | `telegram_bot_token: string`, `chat_id: int \| string`, `message_thread_id: int`, `confirm: boolean = false` | Deletes a forum topic from a Telegram forum supergroup. Requires `confirm=true`. |
 
 ### Message tools
 
 | Tool | Parameters | Description |
 | --- | --- | --- |
-| `delete_message` | `telegram_bot_token: string`, `chat_id: int | string`, `message_id: int` | Deletes one Telegram message from a conversation. |
-| `delete_messages` | `telegram_bot_token: string`, `chat_id: int | string`, `message_ids: int[]` | Deletes multiple Telegram messages by explicit message IDs. Limited to 100 message IDs per call. |
-| `delete_message_history_range` | `telegram_bot_token: string`, `chat_id: int | string`, `start_message_id: int`, `end_message_id: int`, `confirm: boolean = false` | Best-effort deletion of every message ID in an inclusive range. Requires `confirm=true` and is limited to 100 message IDs per call. |
+| `delete_message` | `telegram_bot_token: string`, `chat_id: int \| string`, `message_id: int` | Deletes one Telegram message from a conversation. |
+| `delete_messages` | `telegram_bot_token: string`, `chat_id: int \| string`, `message_ids: int[]` | Deletes multiple Telegram messages by explicit message IDs. Limited to 100 message IDs per call. |
+| `delete_message_history_range` | `telegram_bot_token: string`, `chat_id: int \| string`, `start_message_id: int`, `end_message_id: int`, `confirm: boolean = false` | Best-effort deletion of every message ID in an inclusive range. Requires `confirm=true` and is limited to 100 message IDs per call. |
 
 ## Telegram Bot API limitations
 
