@@ -15,12 +15,12 @@ from telegram_mcp.tools.users import register_user_tools
 def create_server(settings: Settings | None = None) -> FastMCP:
     """Create and configure the Telegram Bot MCP server."""
     settings = settings or get_settings()
-    mcp = FastMCP(settings.mcp_server_name)
+    mcp = FastMCP(name=settings.mcp_server_name,version='0.0.1')
     bot = create_bot(settings)
     telegram_client = TelegramClient(bot)
     register_user_tools(mcp, telegram_client)
     register_chat_tools(mcp, telegram_client)
-    register_message_tools(mcp, telegram_client, settings)
+    register_message_tools(mcp, telegram_client)
 
     @mcp.tool()
     async def health_check() -> dict[str, str]:
