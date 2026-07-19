@@ -149,4 +149,9 @@ class Settings(BaseSettings):
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
     """Return cached application settings."""
+    import os
+
+    env_file = os.environ.get("TELEGRAM_MCP_ENV_FILE")
+    if env_file:
+        return Settings(_env_file=env_file)
     return Settings()
