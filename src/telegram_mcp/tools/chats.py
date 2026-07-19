@@ -14,4 +14,4 @@ def register_chat_tools(mcp: FastMCP, client: TelegramClient) -> None:
     @mcp.tool()
     async def get_chat_infomations(chat_id: int | str) -> ChatInfo:
         """Return Telegram chat information for a chat ID or username."""
-        return await client.get_chat(chat_id)
+        return await client.get_chat_infomations(chat_id)

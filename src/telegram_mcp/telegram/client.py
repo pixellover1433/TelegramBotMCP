@@ -54,7 +54,7 @@ class TelegramClient:
             supports_inline_queries=user.supports_inline_queries,
         )
 
-    async def get_chat(self, chat_id: int | str) -> ChatInfo:
+    async def get_chat_infomations(self, chat_id: int | str) -> ChatInfo:
         """Return sanitized Telegram chat information."""
         if self._bot is None:
             raise RuntimeError("Telegram bot token is not configured. Call set_me first.")
