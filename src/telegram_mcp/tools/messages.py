@@ -6,7 +6,7 @@ from fastmcp import FastMCP
 
 from telegram_mcp.config import Settings
 from telegram_mcp.telegram.client import TelegramClient
-from telegram_mcp.telegram.models import DeleteMessagesResult
+from telegram_mcp.telegram.models import DeleteMessagesResult, MessageHistoryResult
 
 
 def _validate_delete_enabled(settings: Settings, message_count: int) -> None:
@@ -18,6 +18,16 @@ def _validate_delete_enabled(settings: Settings, message_count: int) -> None:
     if message_count > settings.telegram_max_delete_messages:
         raise ValueError(
             f"Cannot delete more than {settings.telegram_max_delete_messages} messages in one call."
+        )
+
+
+def _validate_history_limit(settings: Settings, limit: int) -> None:
+    """Validate message history read limits."""
+    if limit < 1:
+        raise ValueError("limit must be greater than or equal to 1.")
+    if limit > settings.telegram_max_history_messages:
+        raise ValueError(
+            f"Cannot read more than {settings.telegram_max_history_messages} history messages."
         )
 
 

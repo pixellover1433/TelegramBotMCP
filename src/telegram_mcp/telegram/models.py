@@ -50,3 +50,26 @@ class DeleteMessagesResult(BaseModel):
     deleted_count: int
     failed_count: int
     note: str
+
+
+class MessageHistoryItem(BaseModel):
+    """A sanitized Telegram message history item."""
+
+    message_id: int
+    chat_id: int | str
+    date: str | None = None
+    from_user_id: int | None = None
+    from_username: str | None = None
+    text: str | None = None
+    caption: str | None = None
+    content_type: str | None = None
+
+
+class MessageHistoryResult(BaseModel):
+    """Result returned when reading message history for a chat."""
+
+    chat_id: int | str
+    messages: list[MessageHistoryItem]
+    count: int
+    limit: int
+    note: str

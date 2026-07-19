@@ -5,7 +5,7 @@ from __future__ import annotations
 from aiogram import Bot
 
 from telegram_mcp.telegram.bot import create_bot_from_token
-from telegram_mcp.telegram.models import BotInfo, ChatInfo, DeleteMessagesResult
+from telegram_mcp.telegram.models import BotInfo, ChatInfo, DeleteMessagesResult, MessageHistoryResult
 
 
 class TelegramClient:

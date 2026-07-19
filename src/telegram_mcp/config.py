@@ -67,6 +67,11 @@ class Settings(BaseSettings):
         alias="TELEGRAM_ENABLE_FILE_DOWNLOADS",
         description="Whether MCP tools are allowed to download Telegram files.",
     )
+    telegram_max_history_messages: Annotated[int, Field(ge=1)] = Field(
+        default=100,
+        alias="TELEGRAM_MAX_HISTORY_MESSAGES",
+        description="Maximum number of stored history messages one tool call may return.",
+    )
     telegram_max_message_length: Annotated[int, Field(ge=1, le=4096)] = Field(
         default=4096,
         alias="TELEGRAM_MAX_MESSAGE_LENGTH",
