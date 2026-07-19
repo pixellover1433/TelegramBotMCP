@@ -5,7 +5,13 @@ from __future__ import annotations
 from aiogram import Bot
 
 from telegram_mcp.telegram.bot import create_bot_from_token
-from telegram_mcp.telegram.models import BotInfo, ChatInfo, DeleteMessagesResult, MessageHistoryResult
+from telegram_mcp.telegram.models import (
+    BotInfo,
+    ChatInfo,
+    DeleteForumTopicResult,
+    DeleteMessagesResult,
+    MessageHistoryResult,
+)
 
 
 class TelegramClient:
@@ -89,6 +95,29 @@ class TelegramClient:
                 "Telegram Bot API can delete only messages the bot is allowed to delete, "
                 "usually recent messages in chats where it has sufficient permissions. "
                 "It cannot enumerate and wipe an entire chat history automatically."
+            ),
+        )
+
+    async def delete_forum_topic(
+        self,
+        chat_id: int | str,
+        message_thread_id: int,
+    ) -> DeleteForumTopicResult:
+        """Delete a Telegram forum topic by message thread ID."""
+        if self._bot is None:
+            raise RuntimeError("Telegram bot token is not configured. Call set_me first.")
+
+        deleted = await self._bot.delete_forum_topic(
+            chat_id=chat_id,
+            message_thread_id=message_thread_id,
+        )
+        return DeleteForumTopicResult(
+            chat_id=chat_id,
+            message_thread_id=message_thread_id,
+            deleted=deleted,
+            note=(
+                "Telegram can delete forum topics only in forum supergroups where "
+                "the bot has sufficient administrator permissions."
             ),
         )
 

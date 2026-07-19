@@ -52,6 +52,15 @@ class DeleteMessagesResult(BaseModel):
     note: str
 
 
+class DeleteForumTopicResult(BaseModel):
+    """Result returned after deleting a Telegram forum topic."""
+
+    chat_id: int | str
+    message_thread_id: int
+    deleted: bool
+    note: str
+
+
 class MessageHistoryItem(BaseModel):
     """A sanitized Telegram message history item."""
 

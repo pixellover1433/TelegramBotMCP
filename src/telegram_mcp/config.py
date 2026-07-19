@@ -57,6 +57,11 @@ class Settings(BaseSettings):
         alias="TELEGRAM_ENABLE_DELETE_MESSAGES",
         description="Whether MCP tools are allowed to delete Telegram messages.",
     )
+    telegram_enable_delete_topics: bool = Field(
+        default=False,
+        alias="TELEGRAM_ENABLE_DELETE_TOPICS",
+        description="Whether MCP tools are allowed to delete Telegram forum topics.",
+    )
     telegram_max_delete_messages: Annotated[int, Field(ge=1)] = Field(
         default=100,
         alias="TELEGRAM_MAX_DELETE_MESSAGES",
