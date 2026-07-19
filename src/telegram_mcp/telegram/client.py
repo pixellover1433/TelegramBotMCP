@@ -45,6 +45,9 @@ class TelegramClient:
         return BotInfo(
             id=user.id,
             is_bot=user.is_bot,
+            is_premium=user.is_premium,
+            allows_users_to_create_topics=user.allows_users_to_create_topics,
+            can_manage_bots=user.can_manage_bots,
             first_name=user.first_name,
             username=user.username,
             can_join_groups=user.can_join_groups,

@@ -10,6 +10,9 @@ class BotInfo(BaseModel):
 
     id: int
     is_bot: bool
+    is_premium: bool
+    allows_users_to_create_topics: bool
+    can_manage_bots: bool
     first_name: str
     username: str | None = None
     can_join_groups: bool | None = None
