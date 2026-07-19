@@ -15,3 +15,11 @@ class BotInfo(BaseModel):
     can_join_groups: bool | None = None
     can_read_all_group_messages: bool | None = None
     supports_inline_queries: bool | None = None
+
+
+class SetMeResult(BaseModel):
+    """Result returned after changing the runtime Telegram bot token."""
+
+    status: str
+    message: str
+    bot: BotInfo

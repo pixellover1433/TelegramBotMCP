@@ -4,17 +4,43 @@ from __future__ import annotations
 
 from aiogram import Bot
 
+from telegram_mcp.telegram.bot import create_bot_from_token
 from telegram_mcp.telegram.models import BotInfo
 
 
 class TelegramClient:
     """Small wrapper around aiogram's Bot API client."""
 
-    def __init__(self, bot: Bot) -> None:
+    def __init__(self, bot: Bot | None = None) -> None:
         self._bot = bot
+
+    def has_bot(self) -> bool:
+        """Return whether a Telegram bot is currently configured."""
+        return self._bot is not None
+
+    async def set_bot_token(self, token: str) -> BotInfo:
+        """Replace the active Telegram bot token at runtime and return bot identity."""
+        new_bot = create_bot_from_token(token)
+        old_bot = self._bot
+        self._bot = new_bot
+
+        try:
+            bot_info = await self.get_me()
+        except Exception:
+            self._bot = old_bot
+            await new_bot.session.close()
+            raise
+
+        if old_bot is not None:
+            await old_bot.session.close()
+
+        return bot_info
 
     async def get_me(self) -> BotInfo:
         """Return sanitized Telegram bot identity information."""
+        if self._bot is None:
+            raise RuntimeError("Telegram bot token is not configured. Call set_me first.")
+
         user = await self._bot.get_me()
         return BotInfo(
             id=user.id,

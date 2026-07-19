@@ -7,10 +7,18 @@ from aiogram import Bot
 from telegram_mcp.config import Settings
 
 
-def create_bot(settings: Settings) -> Bot:
-    """Create an aiogram bot from application settings."""
-    token = settings.telegram_bot_token_value
+def create_bot_from_token(token: str) -> Bot:
+    """Create an aiogram bot from a Telegram Bot API token."""
     if not token:
-        raise ValueError("TELEGRAM_BOT_TOKEN is required to use Telegram tools.")
+        raise ValueError("Telegram bot token is required.")
 
     return Bot(token=token)
+
+
+def create_bot(settings: Settings) -> Bot | None:
+    """Create an aiogram bot from application settings when a token is configured."""
+    token = settings.telegram_bot_token_value
+    if not token:
+        return None
+
+    return create_bot_from_token(token)
