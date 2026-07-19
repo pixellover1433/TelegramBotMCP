@@ -10,7 +10,6 @@ class BotInfo(BaseModel):
 
     id: int
     is_bot: bool
-    is_premium: bool
     allows_users_to_create_topics: bool
     can_manage_bots: bool
     first_name: str
@@ -26,3 +25,16 @@ class SetMeResult(BaseModel):
     status: str
     message: str
     bot: BotInfo
+
+
+class ChatInfo(BaseModel):
+    """Basic Telegram chat information."""
+
+    id: int
+    type: str
+    title: str | None = None
+    username: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
+    description: str | None = None
+    invite_link: str | None = None

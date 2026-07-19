@@ -7,6 +7,7 @@ from fastmcp import FastMCP
 from telegram_mcp.config import Settings, get_settings
 from telegram_mcp.telegram.bot import create_bot
 from telegram_mcp.telegram.client import TelegramClient
+from telegram_mcp.tools.chats import register_chat_tools
 from telegram_mcp.tools.users import register_user_tools
 
 
@@ -17,6 +18,7 @@ def create_server(settings: Settings | None = None) -> FastMCP:
     bot = create_bot(settings)
     telegram_client = TelegramClient(bot)
     register_user_tools(mcp, telegram_client)
+    register_chat_tools(mcp, telegram_client)
 
     @mcp.tool()
     async def health_check() -> dict[str, str]:

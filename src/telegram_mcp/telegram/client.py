@@ -5,7 +5,7 @@ from __future__ import annotations
 from aiogram import Bot
 
 from telegram_mcp.telegram.bot import create_bot_from_token
-from telegram_mcp.telegram.models import BotInfo
+from telegram_mcp.telegram.models import BotInfo, ChatInfo
 
 
 class TelegramClient:
@@ -45,7 +45,6 @@ class TelegramClient:
         return BotInfo(
             id=user.id,
             is_bot=user.is_bot,
-            is_premium=user.is_premium,
             allows_users_to_create_topics=user.allows_users_to_create_topics,
             can_manage_bots=user.can_manage_bots,
             first_name=user.first_name,
@@ -53,4 +52,21 @@ class TelegramClient:
             can_join_groups=user.can_join_groups,
             can_read_all_group_messages=user.can_read_all_group_messages,
             supports_inline_queries=user.supports_inline_queries,
+        )
+
+    async def get_chat(self, chat_id: int | str) -> ChatInfo:
+        """Return sanitized Telegram chat information."""
+        if self._bot is None:
+            raise RuntimeError("Telegram bot token is not configured. Call set_me first.")
+
+        chat = await self._bot.get_chat(chat_id=chat_id)
+        return ChatInfo(
+            id=chat.id,
+            type=chat.type,
+            title=getattr(chat, "title", None),
+            username=getattr(chat, "username", None),
+            first_name=getattr(chat, "first_name", None),
+            last_name=getattr(chat, "last_name", None),
+            description=getattr(chat, "description", None),
+            invite_link=getattr(chat, "invite_link", None),
         )
