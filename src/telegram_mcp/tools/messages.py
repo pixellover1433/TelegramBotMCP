@@ -11,37 +11,26 @@ from telegram_mcp.telegram.models import DeleteMessagesResult, MessageHistoryRes
 MAX_DELETE_MESSAGES = 100
 
 
-def _validate_delete_limit(settings: Settings, message_count: int) -> None:
+def _validate_delete_limit(message_count: int) -> None:
     """Validate whether message deletion is within configured limits."""
     if message_count < 1:
         raise ValueError("At least one message ID is required.")
     if message_count > MAX_DELETE_MESSAGES:
         raise ValueError(f"Cannot delete more than {MAX_DELETE_MESSAGES} messages in one call.")
 
-
-def _validate_history_limit(settings: Settings, limit: int) -> None:
-    """Validate message history read limits."""
-    if limit < 1:
-        raise ValueError("limit must be greater than or equal to 1.")
-    if limit > settings.telegram_max_history_messages:
-        raise ValueError(
-            f"Cannot read more than {settings.telegram_max_history_messages} history messages."
-        )
-
-
-def register_message_tools(mcp: FastMCP, client: TelegramClient, settings: Settings) -> None:
+def register_message_tools(mcp: FastMCP, client: TelegramClient) -> None:
     """Register Telegram message tools."""
 
     @mcp.tool()
     async def delete_message(chat_id: int | str, message_id: int) -> DeleteMessagesResult:
         """Delete one Telegram message from a conversation."""
-        _validate_delete_limit(settings, 1)
+        _validate_delete_limit(1)
         return await client.delete_messages(chat_id=chat_id, message_ids=[message_id])
 
     @mcp.tool()
     async def delete_messages(chat_id: int | str, message_ids: list[int]) -> DeleteMessagesResult:
         """Delete multiple Telegram messages from a conversation by message IDs."""
-        _validate_delete_limit(settings, len(message_ids))
+        _validate_delete_limit(len(message_ids))
         return await client.delete_messages(chat_id=chat_id, message_ids=message_ids)
 
     @mcp.tool()
@@ -63,5 +52,5 @@ def register_message_tools(mcp: FastMCP, client: TelegramClient, settings: Setti
             raise ValueError("start_message_id must be less than or equal to end_message_id.")
 
         message_ids = list(range(start_message_id, end_message_id + 1))
-        _validate_delete_limit(settings, len(message_ids))
+        _validate_delete_limit(len(message_ids))
         return await client.delete_messages(chat_id=chat_id, message_ids=message_ids)

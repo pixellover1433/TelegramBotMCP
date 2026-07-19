@@ -9,7 +9,7 @@ from telegram_mcp.telegram.client import TelegramClient
 from telegram_mcp.telegram.models import ChatInfo, DeleteForumTopicResult
 
 
-def register_chat_tools(mcp: FastMCP, client: TelegramClient, settings: Settings) -> None:
+def register_chat_tools(mcp: FastMCP, client: TelegramClient) -> None:
     """Register Telegram chat tools."""
 
     @mcp.tool()

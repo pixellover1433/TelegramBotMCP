@@ -19,7 +19,7 @@ def create_server(settings: Settings | None = None) -> FastMCP:
     bot = create_bot(settings)
     telegram_client = TelegramClient(bot)
     register_user_tools(mcp, telegram_client)
-    register_chat_tools(mcp, telegram_client, settings)
+    register_chat_tools(mcp, telegram_client)
     register_message_tools(mcp, telegram_client, settings)
 
     @mcp.tool()
