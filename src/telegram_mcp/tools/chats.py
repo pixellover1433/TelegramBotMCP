@@ -24,8 +24,6 @@ def register_chat_tools(mcp: FastMCP, client: TelegramClient, settings: Settings
         confirm: bool = False,
     ) -> DeleteForumTopicResult:
         """Delete a forum topic from a Telegram forum supergroup."""
-        if not settings.telegram_enable_delete_topics:
-            raise RuntimeError("Forum topic deletion is disabled. Set TELEGRAM_ENABLE_DELETE_TOPICS=true.")
         if not confirm:
             raise RuntimeError("Set confirm=true to delete a forum topic.")
         return await client.delete_forum_topic(
